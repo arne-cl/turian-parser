@@ -1,0 +1,21 @@
+--- EnsembleTokenizer.C.old	Fri Jul  9 09:53:53 2004
++++ EnsembleTokenizer.C	Fri Jun 25 08:21:56 2004
+@@ -9,7 +9,8 @@
+ #define YY_FLEX_MAJOR_VERSION 2
+ #define YY_FLEX_MINOR_VERSION 5
+ 
+-
++#include<istream>
++#include<cassert>
++using namespace std;
+ 
+ /* cfront 1.2 defines "c_plusplus" instead of "__cplusplus" */
+ #ifdef c_plusplus
+@@ -22,7 +23,6 @@
+ #ifdef __cplusplus
+ 
+ #include <stdlib.h>
+-class istream;
+ #include <unistd.h>
+ 
+ /* Use prototypes in function declarations. */

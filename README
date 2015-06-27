@@ -1,0 +1,59 @@
+Syntactic parser
+20060604 release
+
+written by:
+	Joseph Turian <turian at cs dot nyu dot edu>
+	I. Dan Melamed <melamed at cs dot nyu dot edu>
+
+available from:
+	http://nlp.cs.nyu.edu/parser/
+
+based upon:
+	Joseph Turian and I. Dan Melamed (2006).
+	"Advances in Discriminative Parsing",
+	International Committee on Computational Linguistics and the
+	Association for Computational Linguistics (COLING/ACL), Sydney,
+	Australia.
+and
+	Joseph Turian and I. Dan Melamed (2006).
+	"Computational Challenges in Discriminative Parsing",
+	HLT-NAACL workshop on Computationally Hard Problems and Joint
+	Inference in Speech and Language Processing, Brooklyn, NY.
+
+A discriminative, syntactic parser for monolingual parsing of natural
+language text. Released under the GPL.
+
+Please send an email to the authors (lastname@cs.nyu.edu) with any
+questions, comments, or suggestions, or if you wish to be notified of
+future releases.
+
+Copyright (c) 2004-2006, New York University. All rights reserved
+
+***
+
+Contents of the top-level directory:
+
+README			This file
+
+LICENSE			Licensing terms
+
+README-parsing.txt	Quick-start guide to parsing
+
+README-training.txt	Quick-start guide to training
+			[links to runs/README.txt]
+
+code/			Code for training and parsing
+
+data/			Input for the system (training + devel sets)
+
+documentation/		Documentation, and links to documentation
+
+runs/			Directory for different parser runs.
+
+scripts/		Python and Perl scripts
+			Primarily for preprocessing the treebank, doing
+			EDA, &tc.
+
+***
+
+$Id: README 1657 2006-06-04 03:03:05Z turian $

@@ -1,0 +1,269 @@
+###############################################################################
+#
+#
+#  parameters.example
+#
+#
+#  Example of a global parameters file.
+#
+#  * All parameters that *can* be set are, in fact, set in this file.
+#  * If a parameter is not assigned a value in this file, it retains its
+#  default value (default values are assigned in parameter-storage.C).
+#  * parameter::load_file("globals.example") will read these parameter values in
+#  at runtime.
+#
+#  * Any text after '#' is considered a comment and discarded.
+#  * All other text must be of the format:
+#     variable = value
+#  * Note that any floating-point variable can be assigned value
+#  "log(parameter)" or "parameter", which is computed based upon the current value of
+#  "parameter". If you change the value of "parameter", make sure that
+#  all references to it occur *after* the re-assignment of "parameter".
+#
+#
+#  $Id: parameters.r2l-kitchen-sink 1654 2006-06-04 02:26:51Z turian $
+#
+#
+###############################################################################
+
+# Before doing any training, should we cache all Example Feature vectors?
+# i.e. Should we convert all Example%s to FullExample%s?
+# The cost is roughly 720 bytes * # examples.
+cache_example_feature_vectors_before_training = false
+
+# Before building a decision tree, should we cache Feature vectors for all
+# Example%s in the sample?
+# \invariant cache_example_feature_vectors_before_decision_tree_building =>
+# downsample_examples_during_feature_selection
+cache_example_feature_vectors_before_decision_tree_building = true
+
+# The minimum confidence for us to greedily perform a decision at some
+# state, without first evaluating the other candidates
+minconf_for_greedy_decision = 1000
+
+# Treat each state as having weight 1, and give half this weight
+# to the positive examples therein and half this weight to the negative
+# examples therein.
+# If false, all examples are equally weighted.
+share_example_weight_per_state = true
+
+# \todo FIXME: Don't hardcode the directory [or otherwise make it less likely that we shoot ourselves in the foot]
+vocabulary_filename = VOCABULARY_FILENAME
+label_filename = LABEL_FILENAME
+
+# A *positive* decision tree leaf must have examples from at least
+# this many different sentences to be considered valid.
+# \warning This only applies during decision tree construction.
+# It may not hold leaf confidence-rating.
+min_sentences_per_feature = 1
+
+use_item_features = true
+use_length_features = true
+use_quant_features = false
+use_exists_features = true
+use_exists_terminal_features = true
+use_item_child_features = true
+context_groups_for_exists_features = true
+context_groups_for_exists_terminal_features = true
+length_of_context_items_features = true
+use_range_features = true
+use_terminal_item_features = true
+
+# Allow equality tests over lengths?
+# (otherwise, we just do 'greater than' tests)
+length_equal_to_feature = true
+
+# Use poscloss predicate
+# \invariant use_redundant_feature_predicates => use_posclass
+use_posclass = true
+
+use_clustered_feature_predicates = false
+
+# Use binary predicates that haven't been tested by other discriminative
+# parser (e.g. is_basal_NP)
+use_esoteric_feature_predicates = false
+
+# Use predicates that are aggregates of other predicates (typically,
+# super-classes of POS + label sets)
+# \invariant use_esoteric_feature_predicates => use_redundant_feature_predicates
+use_redundant_feature_predicates = false
+
+use_context_features = true
+
+# Don't use any features over terminals
+# \invariant use_exists_terminal_features => use_terminal_features
+use_terminal_features = true
+
+binary_predicates_can_have_false_value = false
+
+# True iff we want to construct redundant features.
+# Useful only for reading in obsolete hypotheses.
+construct_redundant_features = false
+
+# True iff the treebank contains a fixed parse path.
+# If this is the case, then consistent parsing---typically used for
+# example generation---will always take the treebank path (and hence always
+# generate the same examples).
+treebank_has_parse_paths = true
+
+# Only allow parse decisions in a left-to-right fashion?
+# In other words, only allow an inference if there are no non-terminal
+# constituents to its right in the state?
+# \invariant !(parse_left_to_right and parse_right_to_left)
+parse_left_to_right = false
+
+# Only allow parse decisions in a right-to-left fashion?
+# In other words, only allow an inference if there are no non-terminal
+# constituents to its left in the state?
+# \invariant !(parse_left_to_right and parse_right_to_left)
+parse_right_to_left = true
+
+# When parsing l2r/r2l (or generating training examples),
+# consider all actions as legal even if they violate the l2r/r2l
+# ordering?
+consider_all_examples_despite_r2l_or_l2r = false
+
+
+
+# Should we downsample the example set during feature selection
+# (decision-tree building, but not weighting)?
+downsample_examples_during_feature_selection = true
+
+# Maximum example size to use when downsampling examples for feature selection.
+# At most half this value will be positive examples, and at most half
+# will be negative.
+# The sampling method is based upon "Sampling to estimate
+# arbitrary subset sums" (Duffield et al.).
+# (decision-tree building, but not weighting)?
+downsample_examples_during_feature_selection_sample_size = 100000
+
+
+# Either EXPONENTIAL_LOSS or LOGISTIC_LOSS
+loss_type = LOGISTIC_LOSS
+#loss_type = EXPONENTIAL_LOSS
+
+# Given that we have the gain measures for a node (determined as per
+# parameter::subtract_l1_penalty_from_leaf_gain()), only allow the node
+# to be split if the sum of the gains of the children is at least
+# min_gain_factor * the gain of the node.
+min_gain_factor_for_split = 1.01
+
+# Beam search width, i.e. the maximum number of partial parse states we
+# keep around during parsing.
+beam_search_width = 1000000
+
+# Maximum number of partial parse states we pop from the beam during parsing.
+max_search_states_to_pop = 100000
+
+
+# Constant epsilon, used for determine negligible differences
+#small_epsilon = 1e-16
+small_epsilon = 1e-8
+
+# The maximum number of training iterations
+max_iterations = 99999
+
+# Maximum length of any example span
+max_span_length = 5
+
+# Maximum offset of any item in an ItemFeature
+# \todo WRITEME. Describe this better
+max_offset = 3
+
+# Maximum range in a RangeFeature
+# i.e. the maximum number of items selected over a range, inclusive.
+# \todo WRITEME. Describe this better
+max_range = 4
+
+# Maximum (span) range in a RangeFeature over context
+# i.e. the maximum number of context items selected over a range, inclusive.
+max_context_range = 4 
+
+
+# Maximum offset of any *context* item in an ItemFeature
+# i.e. max_context_offset + 1 is the number of context items that can be examined
+max_context_offset = 2
+
+# Maximum offset of any terminal in a TerminalItemFeature
+# \todo WRITEME. Describe this better
+max_terminal_offset = 3
+
+# Maximum offset of any *context* terminal in a TerminalItemFeature
+# i.e. max_context_offset + 1 is the number of context items that can be examined
+max_terminal_context_offset = 2
+
+# Maximum offset of any *child* item in an ItemFeature
+# \todo WRITEME. Describe this better
+max_child_offset = 0
+#max_child_offset = 1
+
+# Find the best leaf confidence, within this epsilon
+#confidence_epsilon = 0.0000001
+confidence_epsilon = 0.0001
+
+# If we are using the l1 penalty, should we vary the penalty term?
+# \warning The penalty may be too aggressive; If an earlier tree
+# split used the same feature, we nonetheless treat them as independent
+# in computing the magnitude of the confidence.
+# \invariant vary_l1_penalty => initial_l1_penalty_factor == final_l1_penalty_factor
+vary_l1_penalty = true
+
+# Initial l1 penalty scaling factor
+initial_l1_penalty_factor = 1e7
+
+# Final l1 penalty scaling factor
+final_l1_penalty_factor = 0.0600448
+
+# When we reduce the l1 penalty, we reduce it to the maximum threshold,
+# downweighted by l1_penalty_factor_overscale
+#l1_penalty_factor_overscale = 1
+l1_penalty_factor_overscale = 0.9
+
+
+# Normalize feature counts to mean 0, variance 1 before applying
+# the l1 penalty.
+# (from Riezler, ACL)
+normalize_feature_counts = false
+
+
+
+# Maximum depth of any decision tree node
+max_depth = 10000
+
+###############################################################################
+#
+#  The following parameters probably can remain unchanged.
+#
+#
+
+# Global debug level.
+#  - 0: No debug messages, quiet mode
+#  - 1: A few important debug messages, or very useful O(n) messages.
+#  - 2: More debug messages, but not more than a few screens worth
+#	(i.e. O(n), but with low constant term)
+#  - 3: Get swamped
+#debuglevel = 3
+debuglevel = 2
+
+# The number of different labels
+num_labels = 27
+
+# Precision of floating-point output
+precision = 12
+
+# Disallow PRT label?
+# As per Magerman, Collins, &tc. convert non-terminal label PRT to
+# ADVP during preprocessing. If so, then the parser should explicitly disallow
+# PRT decisions, despite what (errant) hypotheses may say.
+convert_PRT_to_ADVP = true
+
+# Raise punctuation nodes.
+# When punctuation nodes are raised, they are never the leftmost or
+# rightmost child of any node but the TOP (root) node.
+raise_punctuation = true
+
+# Random seed
+seed = 0
+
+# Require an END token at the end of hypothesis files?
+need_END_token = true

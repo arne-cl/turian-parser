@@ -1,0 +1,31 @@
+--- EnsembleTokenizer.C.old	2005-11-29 16:29:33.842146329 -0500
++++ EnsembleTokenizer.C	2005-11-29 16:32:00.021667536 -0500
+@@ -10,7 +10,9 @@
+ #define YY_FLEX_MAJOR_VERSION 2
+ #define YY_FLEX_MINOR_VERSION 5
+ 
+-
++#include<istream>
++#include<cassert>
++using namespace std;
+ 
+ /* cfront 1.2 defines "c_plusplus" instead of "__cplusplus" */
+ #ifdef c_plusplus
+@@ -23,7 +25,7 @@
+ #ifdef __cplusplus
+ 
+ #include <stdlib.h>
+-class istream;
++//class istream;
+ #include <unistd.h>
+ 
+ /* Use prototypes in function declarations. */
+@@ -3670,7 +3672,7 @@
+ 	}
+ 
+ 
+-extern "C" int isatty YY_PROTO(( int ));
++//extern "C" int isatty YY_PROTO(( int ));
+ void yyFlexLexer::yy_init_buffer( YY_BUFFER_STATE b, istream* file )
+ 
+ 	{

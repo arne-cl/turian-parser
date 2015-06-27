@@ -1,0 +1,27 @@
+To generate API documentation, run 'doxygen' from the code/ directory
+(NOT from code/documentation/).
+Then, run 'make' from code/documentation/ to generate PDF output.
+
+***
+
+Contents of code/documentation/:
+
+Makefile		Quasi-functional makefile to compile LaTeX source
+
+README			This file
+
+html/			HTML version of the API docs
+
+latex/			LaTeX/PDF version of the API docs
+
+extra/			Extra documentation, e.g. front matter and
+			design strategy.
+
+parser.tag		.tag file (?) for KDevelop
+			(NB the KDevelop API browser is quite nice)
+
+xml/			XML version of the API docs
+
+***
+
+$Id: README 1652 2006-06-04 01:32:05Z turian $

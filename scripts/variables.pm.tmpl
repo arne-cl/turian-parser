@@ -1,0 +1,180 @@
+#######################################################################
+#
+#
+#   variables.pm.tmpl
+#
+#   Template for variables global to the perl scripts.
+#   TODO: Remove obsolete values.
+#
+#   NOTE: To use this file
+#   1. Edit the variables, particularly $basedir
+#   2. Copy this file into $scriptdir
+#   3. Rename it to variables.pm
+#   4. Run outer-loop.pl with $scriptdir as the working directory.
+#
+#   $Id: variables.pm.tmpl 1657 2006-06-04 03:03:05Z turian $
+#
+#
+#######################################################################
+# Copyright (c) 2004-2006, New York University. All rights reserved
+#######################################################################
+
+$max_steps = 50;		# Maximum number of steps, where copying
+				# the current parser to the first weak
+				# hypothesis *does* count as one step
+
+$simulation = 0;		# Print out commands, but do not actually
+				# execute them
+
+$labels = 27;			# Number of different labels for which
+				# we build classifiers
+
+$N = 0;				# Number of examples
+
+$max_span_length = 5;		# Maximum length of any span
+
+$regularization_constant = 0.;	# AdaBoost-REG constant
+
+#$basedir = "/s1/export/home/turian/parsing/system";
+$datadir = "$basedir/data";
+$scriptdir = "$basedir/scripts";
+$codedir = "$basedir/code";
+#$workdir = "$basedir/workdata";		### Unneccessary? Try to avoid using this.
+## Make sure that variables.pm exists in the proper directory
+## (Assume, of course, that that variables.pm is the one currently being run)
+#-e "$workdir/variables.pm" or die $!;
+
+print STDERR "VARIABLES.PM:\n";
+print STDERR "\tBase dir:\t$basedir\n";
+print STDERR "\tData dir:\t$datadir\n";
+print STDERR "\tScripts dir:\t$scriptdir\n";
+
+#$logdir = "$workdir/logs";
+#-e $logdir or system("mkdir $logdir");
+#-e $logdir and -d $logdir or die $!;
+#$lockdir = "$workdir/lockfiles";
+#-e $lockdir or system("mkdir $lockdir");
+#-e $lockdir and -d $lockdir or die $!;
+
+# FIXME: Fill out more script location variables,
+# and use these variables in scripts.
+$script_last_iterations = "$scriptdir/run-management/last-iterations.pl";
+die unless -x $script_last_iterations;
+$script_numsplits_last_iterations = "$scriptdir/run-management/numsplits-last-iterations.pl";
+die unless -x $script_numsplits_last_iterations;
+$script_fms = "$scriptdir/run-management/score/fms.pl";
+die unless -x $script_fms;
+
+# TODO: Allow optional parameter must_exist (default True)
+sub parsefile {
+	(my $nom) = @_;
+	my $f = sprintf("$datadir/treebank-parse.$nom.jmx");
+	die $! unless -r $f;
+	return $f;
+}
+sub postprocess_jmx {
+	(my $nom) = @_;
+	my $f = sprintf("$datadir/treebank-parse-postprocess.$nom.jmx");
+	die $! unless -r $f;
+	return $f;
+}
+sub postprocess_gold {
+	(my $nom) = @_;
+	my $f = sprintf("$datadir/treebank-parse-postprocess.$nom.gld");
+	die $! unless -r $f;
+	return $f;
+}
+
+sub get_directory_name {
+	(my $d) = @_;
+	die $! unless -d $d;
+	my $f = "$d/NAME";
+	die $! unless -r $f;
+	my $n = `cat $f`;
+	$n =~ s/\s+$//s;
+	return $n;
+}
+
+$sys = `hostname`;
+$sys =~ s/\..*//s;
+$sys =~ s/[\r\n]+$//s;
+
+#$log_file = "$logdir/log.$sys.txt";
+#if (not $simulation) {
+#	open(LOG, ">>$log_file") or die $!;
+#}
+
+sub labelstr {
+	(my $label) = @_;
+	die if $label >= 100;
+	return sprintf("label-%.2d", $label)
+}
+
+sub stagestr {
+	(my $stage) = @_;
+	return sprintf("stage-%.3d", $stage)
+}
+
+sub stepstr {
+	(my $step) = @_;
+	return sprintf("step-%.3d", $step)
+}
+
+sub lockfile {
+	(my $step, my $label) = @_;
+	return sprintf("$lockdir/lock.%s.%s", labelstr($label), stepstr($step));
+}
+
+sub logmsg {
+	(my $msg) = @_;
+
+	my $d = localtime;
+	$str = "$d: $msg\n";
+	print STDERR $str;
+	print LOG $str if not $simulation;
+}
+
+sub logstage {
+	(my $stage) = @_;
+	my $d = localtime;
+	$str = sprintf("\n\n--------------------------------------\n$d: STAGE #%.3d\n", $stage);
+	print STDERR $str;
+	print LOG $str if not $simulation;
+}
+
+sub logsteplabel{
+	(my $stage, my $step, my $label) = @_;
+	my $d = localtime;
+	my $str = sprintf("\n$d: STAGE #%.3d, TIMESTEP #%.3d, LABEL #%.2d\n", $stage, $step, $label);
+	print STDERR $str;
+	print LOG $str if not $simulation;
+}
+
+sub cmd {
+	my $desc;
+	my $cmd;
+	my $dont_die;
+	if (scalar @_ == 3) {
+		($desc, $cmd, $dont_die) = @_;
+	} else {
+		($desc, $cmd) = @_;
+		$dont_die = 0;
+	}
+
+	(my $cmdout = $cmd) =~ s|$basedir|.|g;
+
+	logmsg(sprintf("%s...", ucfirst($desc)));
+	print STDERR "\tCommand: $cmdout\n";
+
+	my $ret = 0;
+	$ret = system("nice -10 time $cmd") if not $simulation;
+	#$ret = system("nice -10 $cmd") if not $simulation;
+	die if not $simulation and not $dont_die and $ret != 0;
+
+	logmsg(sprintf("...done %s", $desc));
+	print STDERR sprintf("\tReturn value: %d\n\n", $ret/256);
+
+	return $ret;
+}
+
+1;

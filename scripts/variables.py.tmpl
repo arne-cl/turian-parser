@@ -1,0 +1,205 @@
+#######################################################################
+#
+#
+#   variables.py.tmpl
+#
+#   Variables global to the system.
+#   
+#   TODO:
+#   * Check that directories and whatnot exist.
+#   * Remove obsolete values.
+#
+#   $Id: variables.py.tmpl 1657 2006-06-04 03:03:05Z turian $
+#
+#
+#######################################################################
+# Copyright (c) 2004-2006, New York University. All rights reserved
+#######################################################################
+
+jmxcmd = "/home/turian/parsing/tools/jmx/mxpost.linux PROJECTDIR 2> /dev/null"
+toutanova_cmd = "/home/turian/parsing/tools/toutanova-tagger/tagger-2004-08-16/tag.sh 2> /dev/null"
+
+# Number of different constituent labels
+# There are 26 constituent labels, as well as TOP, giving 27 labels
+labels = 27
+
+# Debug level:
+# 0 - No debug messages, quiet mode
+# 1 - A few important debug messages, or very useful O(n) messages.
+# 2 - More debug messages, but not more than a few screens worth
+#	(i.e. O(n), but with low constant term)
+# 3 - Get swamped
+debug_level = 1
+#debug_level = 2
+#debug_level = 3
+
+# Set to True to profile (slow!)
+profile = False
+#profile = True
+
+# Maximum length of any span
+max_span_length = 5
+
+# Number of context items for examples
+#example_context = 4
+#example_context = 3
+example_context = 2
+
+# Maximum number of words per sentence not to discard it.
+max_words_per_sentence = 15
+
+# Minimum number of sentences something must appear in s.t. we do not
+# assume it's just noise.
+#minfreq = 0
+minfreq = 5
+
+# Yes, we want to lowercase the vocabulary
+# If you set this to false, you'll probably want to regenerate all data
+# from scratch.
+lowercase_vocabulary = True
+
+# Set to True if we want to replace all content words with "*content*"
+# NB if this is True, then lowercase_vocabulary is automatically set
+# to True.
+only_function_tags = False
+
+# Extra function word list.
+# These words are not delexicalized, even if they do not occur with a function tag.
+extra_function_words = ["n't", "not", "%"]
+#extra_function_words = ["n't", "not"]
+#extra_function_words = ["n't", "not", "%", "be", "were", "am", "'m", "are", "'re", "is", "'s", "was", "were", "been", "being", "have", "had", "have", "'ve", "has", "had", "'d", "had", "having"]
+
+# As per Magerman, Collins, &tc. convert non-terminal label PRT to
+# ADVP during preprocessing.
+convert_PRT_to_ADVP = True
+
+# Remove quotation marks and all constituents dominating only quotation
+# marks
+remove_quotation_marks = True
+
+# Raise punctuation nodes, such that they are never the leftmost or
+# rightmost child of any node but the TOP (root) node.
+raise_punctuation = True
+punctuation_tags = [":", ",", ".", "``", "''"]	# POS tags not scored by EVALB
+
+# Remove unary projections in which the new parent node has the same
+# label as the single child
+remove_unary_projections_to_self = True
+
+# Remove outermost items, if they are punctuation
+remove_outermost_punctuation = True
+
+# Use a duplicate TOP item, in that we raise punctuation but do not
+# remove outermost punctuation.
+duplicate_top_item = (raise_punctuation and not remove_outermost_punctuation)
+
+# Flatten compounds.
+# We flatten closed-class compounds according to our rules list.
+# (cf. documentation/compound-rules.txt)
+# This is case insenstive.
+# TODO: We should also flatten compound names.
+flatten_closed_class_compounds = False
+
+# Dan's Chomsky-adjunction-like S transform.
+#	(S _+ NP VP) -> (S _+ (S NP VP))
+# where "_+" is one or more nodes.
+# WARNING: This transform must occur *after* we raise punctuation.
+use_S_transform = False
+
+# A modification of the above Chomsky-adjunction-like S transform.
+#	(S _* NP VP) -> (S _* (SPRIME NP VP))
+# where "_*" is zero or more nodes.
+# WARNING: This transform must occur *after* we raise punctuation.
+use_SPRIME_transform = False
+
+assert not use_S_transform or not use_SPRIME_transform
+
+# Convert helper verbs to AUX or AUXG
+# Based upon rules by Don Blaheta
+# http://www.cs.brown.edu/~dpb/tbfix/aux
+add_AUX = False
+
+# Add basal NPs (NPBs).
+add_basal_nps = False
+
+# Add an extra NP level to NPBs.
+add_basal_np_extra_np_level = False
+
+# All coordinating conjunctions.
+# FIXME: Adam sez don't use ':' as a coordinating conjunction, only
+# use ',' as a coordinating conjunction when there is also a 'CC'.
+# FIXME: Treat ':' and ',' as coordinating conjunctions,
+# in addition to 'CC'?
+coordinating_conjunctions = ["CC"]
+#coordinating_conjunctions = ["CC", ":", ","]
+
+# "Collins defines a sentential node, for the purposes of repairing NPBs,
+# to be any node that begins with the letter S." ---Bikel
+sentential_nodes = ["S", "SBAR", "SBARQ", "SINV", "SQ"]
+
+####################################################################
+#
+# Avoid touching anything below this point.
+#
+
+# TODO: Use os.path.join for the following...
+
+#home_dir = "/s1/export/home/turian"
+#system_dir = home_dir + "/parsing/somesystem"
+scripts_dir = system_dir + "/scripts"
+modules_dir = scripts_dir + "/treebank-processing/modules"
+data_dir = system_dir + "/data"
+
+# Make sure that the working-directory is a subdirectory of the system dir
+import os,string,os.path
+cwd = os.path.realpath(os.getcwd())
+tmp = os.path.realpath(system_dir)
+assert (cwd == tmp) or string.find(cwd, tmp + "/") != -1
+
+# Make a directory name uniform
+# Super useful for user-entered directories
+def wrap(dir):
+	return string.strip(string.replace(os.path.realpath(dir), "/clusterRoot", ""))
+assert(wrap(system_dir) == system_dir)
+
+vocabulary_file = data_dir + "/vocabulary.txt"
+label_file = data_dir + "/labels.txt"
+
+def parsefile(nom, must_exist=True):
+	f = os.path.join(data_dir, "treebank-parse.%s.jmx" % nom)
+	if must_exist: assert os.access(f, os.R_OK)
+	return f
+def postprocess_jmx(nom, must_exist=True):
+	f = os.path.join(data_dir, "treebank-parse-postprocess.%s.jmx" % nom)
+	if must_exist: assert os.access(f, os.R_OK)
+	return f
+def postprocess_gold(nom, must_exist=True):
+	f = os.path.join(data_dir, "treebank-parse-postprocess.%s.gld" % nom)
+	if must_exist: assert os.access(f, os.R_OK)
+	return f
+
+condor_parser_opsys_cmd = wrap(os.path.join(system_dir, "condorbin/parser.$$(Arch)"))
+condor_parser_linux_cmd = wrap(os.path.join(system_dir, "condorbin/parser.INTEL"))
+condor_parser_sun_cmd = wrap(os.path.join(system_dir, "condorbin/parser.SUN4u"))
+condor_parser_euler_cmd = wrap(os.path.join(system_dir, "condorbin/parser.x86_64"))
+condor_parser_search_greedy_completion_opsys_cmd = wrap(os.path.join(system_dir, "condorbin/parser-search-greedy-completion.$$(Arch)"))
+condor_parser_search_greedy_completion_linux_cmd = wrap(os.path.join(system_dir, "condorbin/parser-search-greedy-completion.INTEL"))
+condor_parser_search_greedy_completion_sun_cmd = wrap(os.path.join(system_dir, "condorbin/parser-search-greedy-completion.SUN4u"))
+condor_parser_search_greedy_completion_euler_cmd = wrap(os.path.join(system_dir, "condorbin/parser-search-greedy-completion.x86_64"))
+
+import os, string, sys, weakref
+
+for d in [home_dir, system_dir, scripts_dir, modules_dir, data_dir]:
+	assert(os.path.isdir(d))
+# TODO: Check other directories + files exist
+
+# Add the modules dir to the PYTHONPATH
+sys.path.append(modules_dir)
+
+from debug import *
+set_debug_level(debug_level)
+
+# WRITEME: Import psyco??
+pin = os.popen("/bin/uname")
+mysys = string.strip(pin.readline())
+pin.close()

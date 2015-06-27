@@ -1,0 +1,20 @@
+Executable	= /s1/export/home/turian/parsing/runsystem-length5/condorbin/$(cmd).$$(OpSys)
+Universe	= Standard
+Notification	= Error
+Requirements	= (Arch == "INTEL" && OpSys == "LINUX") && UidDomain == "cs.nyu.edu" && FileSystemDomain == "cs.nyu.edu" && Machine != "m1.cs.nyu.edu" && Machine != "int1.cims.nyu.edu" && Machine != "int2.cims.nyu.edu" && Machine != "int3.cims.nyu.edu" && Machine != "int4.cims.nyu.edu" && Machine != "int5.cims.nyu.edu"
+#Rank		= mips
+ShouldTransferFiles = No
+Image_size	= 250 Meg
+Buffer_size	= 524288
+Buffer_block_size = 32768
+Priority	= +1
+
+#NiceUser	= True
+
+Arguments	= $(arg)
+Output		= $(out)
+Error		= $(err)
+Log		= $(log)
+
+Initialdir	= $(basedir)
+Queue

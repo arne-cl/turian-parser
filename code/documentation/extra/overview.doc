@@ -1,0 +1,20 @@
+/*  $Id: overview.doc 1657 2006-06-04 03:03:05Z turian $
+ *  Copyright (c) 2004-2006, New York University. All rights reserved. */
+/*!
+\mainpage Introduction
+
+``Oh, get ahold of yourself. Nobody's proposing that we parse
+English.'' ---Larry Wall in <199709032332.QAA21669@wall.org>
+
+\authors Based upon research by Joseph Turian and I. Dan Melamed.
+\authors Implemented and documented by Joseph Turian, who is to
+blame for any bugs in the code and typoes in the docs.
+\authors Thank you to Wei Wang for his C++ help.
+
+available from: http://nlp.cs.nyu.edu/parser/
+
+A discriminative, syntactic parser for monolingual parsing of natural
+language text.
+
+Copyright (c) 2004-2006, New York University. All rights reserved.
+ */
