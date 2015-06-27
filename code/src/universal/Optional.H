@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <cassert>
 using namespace std;
 
 template<class T>
