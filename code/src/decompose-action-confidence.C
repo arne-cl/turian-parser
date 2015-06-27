@@ -28,7 +28,7 @@
 #include <cstdlib>
 
 int main(int argc, char** argv) {
-	stats::stats();
+	stats();
 
 	string tree_file;
 	unsigned step_number;

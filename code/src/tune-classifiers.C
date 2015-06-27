@@ -60,7 +60,7 @@ void tune(Label label, string treebank_file) {
 }
 
 int main(int argc, char **argv) {
-	stats::stats();
+	stats();
 
 	ios::sync_with_stdio(false);	// Do not keep C and C++ streams in sync
 

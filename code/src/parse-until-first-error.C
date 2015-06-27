@@ -26,7 +26,7 @@
 #include <cstdlib>
 
 int main(int argc, char** argv) {
-	stats::stats();
+	stats();
 
 	ios::sync_with_stdio(false);	// Do not keep C and C++ streams in sync
 

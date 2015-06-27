@@ -28,7 +28,7 @@
 #include <cstdlib>
 
 int main(int argc, char** argv) {
-	stats::stats();
+	stats();
 
 	if (argc < 3) {
 		cerr << "Incorrect call.\nUSAGE: ./parser-with-hypothesis-parameters treebank parameters_file [hypothesis_files ...]\n";
